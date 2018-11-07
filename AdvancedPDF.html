@@ -1,0 +1,370 @@
+﻿<?xml version="1.0" ?>
+<!DOCTYPE pdf PUBLIC "-//big.faceless.org//report" "report-1.1.dtd">
+<pdf>
+    <head>
+        <#if .locale= ="ru_RU">
+            <link name="verdana" type="font" subtype="opentype" src="${nsfont.verdana}" src-bold="${nsfont.verdana_bold}" bytes="2" />
+        </#if>
+        <macrolist>
+            <macro id="nlheader">
+                <table class="header" style="width: 100%;">
+                    <tr>
+                        <td rowspan="2">
+                            <#if companyInformation.logoUrl?length !=0><img src="${companyInformation.logoUrl}" width="40%" height="40%" /> </#if>
+                            <!--<span class="nameandaddress">${companyInformation.addressText}</span>-->
+                        </td>
+                        <td align="right" style="padding-left: 20%"><span>Date:</span></td>
+                        <td align="right"><span>${record.trandate}</span></td>
+                    </tr>
+
+                    <tr>
+                        <td align="right" style="padding-left: 20%"><span>Invoice:</span></td>
+                        <td align="right"><p align="right">#${record.tranid} <br /> Page <pagenumber /> of <totalpages /></p></td>
+                    </tr>
+
+                </table>
+
+
+
+                <!--
+                <table style="width: 50%; margin-top: 10px;">
+                <tr>
+                    <td class="addressheader" colspan="3"><b>Claim Number:</b></td>
+                    <td class="addressheader" colspan="3" align="right"><b><#if record.custbody_rfi_claimnumber?length != 0>${record.custbody_rfi_claimnumber}</#if></b></td>
+
+                </tr>
+
+                <tr>
+                    <td class="addressheader" colspan="3"><b>Alt. Claim Number:</b></td>
+                    <td class="addressheader" colspan="3"><b>123456</b></td>
+
+                </tr>
+                <tr>
+                    <td class="addressheader" colspan="3"><b>Alt. Claim Number:</b></td>
+                    <td class="addressheader" colspan="3"><b>123456</b></td>
+
+                </tr>
+                <tr>
+                    <td class="addressheader" colspan="3"><b>File Number:</b></td>
+                    <td class="addressheader" colspan="3" align="right"><b>${record.job}</b></td>
+
+                </tr>
+
+
+                </table>
+                -->
+
+                <#if record.approvalstatus !="Approved">
+                    <!--<div style="position: fixed; top: 50%; left: 50%;">-->
+                    <div style="margin: 0 auto; left: 15%; color: #EEE; -ms-transform: rotate(10deg); -webkit-transform: rotate(10deg); transform: rotate(10deg);">
+                        <p align="center" style="font-size: 110pt; #EEE !important">DRAFT</p>
+                    </div>
+                </#if>
+
+            </macro>
+
+            <macro id="nlfooter">
+                <hr />
+                <table style="width: 100%; padding: 0px;" cellpadding="0">
+                    <tr>
+                        <td class="footer" style="width: 28%;">
+                            <p class="disclaimer" align="left">
+                                <b>TO MAIL PAYMENT</b> <br />
+                                INCLUDE ACCT ${record.custbody_rfi_casenumberid} and ${record.custbody_rfi_clientid}<br />
+                                ${companyInformation.addressText} <br />
+                                Tax ID#: ${companyInformation.employerid}
+                            </p>
+                        </td>
+                        <td class="footer" style="width: 47%;">
+                            <p class="disclaimer" align="center">
+                                <!--<i>Note: Our billing rate is periodically subject to change</i>-->
+                                <b>TERMS</b><br />
+                                <#if record.terms= ="Due on receipt">
+                                    PAYABLE IN FULL UPON RECEIPT
+                                </#if>
+                                <br />
+                                ${record.custbody_rfi_sp_termsconditions} <br />
+                                <b>OUR BILLING RATE IS SUBJECT TO CHANGE</b> <br /><br />
+                                <b><u>${companyInformation.url}</u></b>
+                            </p>
+                        </td>
+                        <td class="footer" style="width: 25%;">
+                            <p class="disclaimer" align="right">
+                                <b>TO PAY WITH VISA/MASTERCARD</b> <br />
+                                ACCOUNTS RECEIVABLE<br />
+                                ${companyInformation.phone}
+                            </p>
+                        </td>
+                    </tr>
+                </table>
+            </macro>
+
+
+        </macrolist>
+        <style type="text/css">
+                    /*table, tr, td, th{
+                border: 1px solid;
+            }*/
+
+                    div {
+                        <#if .locale == "zh_CN"> font-family: stsong, sans-serif;
+                        <#elseif .locale == "zh_TW"> font-family: msung, sans-serif;
+                        <#elseif .locale == "ja_JP"> font-family: heiseimin, sans-serif;
+                        <#elseif .locale == "ko_KR"> font-family: hygothic, sans-serif;
+                        <#elseif .locale == "ru_RU"> font-family: verdana;
+                        <#else> font-family: sans-serif;
+                        </#if> font-size: 9pt;
+                        table-layout: fixed;
+                    }
+
+                    p {
+                        <#if .locale == "zh_CN"> font-family: stsong, sans-serif;
+                        <#elseif .locale == "zh_TW"> font-family: msung, sans-serif;
+                        <#elseif .locale == "ja_JP"> font-family: heiseimin, sans-serif;
+                        <#elseif .locale == "ko_KR"> font-family: hygothic, sans-serif;
+                        <#elseif .locale == "ru_RU"> font-family: verdana;
+                        <#else> font-family: Calibri, sans-serif;
+                        </#if> font-size: 9pt;
+                    }
+
+
+                    div.footer {
+                        font-size: 8pt;
+                    }
+
+                    p.disclaimer {
+                        font-size: 8pt;
+                        text-transform: uppercase;
+                    }
+
+                    div.total {
+                        margin-right: 0px;
+                    }
+
+
+                    span.total {
+                        padding-left: 2em;
+                        /* border-top: solid 2px;
+            border-bottom: solid 2px; */
+                    }
+
+                    table {
+                        <#if .locale == "zh_CN"> font-family: stsong, sans-serif;
+                        <#elseif .locale == "zh_TW"> font-family: msung, sans-serif;
+                        <#elseif .locale == "ja_JP"> font-family: heiseimin, sans-serif;
+                        <#elseif .locale == "ko_KR"> font-family: hygothic, sans-serif;
+                        <#elseif .locale == "ru_RU"> font-family: verdana;
+                        <#else> font-family: calibri, sans-serif;
+                        </#if> font-size: 9pt;
+                        table-layout: fixed;
+                    }
+
+                    th {
+                        font-weight: bold;
+                        font-size: 9pt;
+                        vertical-align: middle;
+                        padding: 5px 6px 3px;
+                        /* background-color: #e3e3e3;
+                    color: #333333; */
+                    }
+
+                    td {
+                        /*padding: 4px 6px;*/
+                    }
+
+                    b {
+                        font-weight: bold;
+                        color: #333333;
+                    }
+
+                    table.header td {
+                        padding: 0px;
+                        font-size: 9pt;
+                    }
+
+                    table.footer td {
+                        padding: 0px;
+                        font-size: 8pt;
+                    }
+
+                    table.itemtable th {
+                        /*padding-bottom: 10px;
+                    padding-top: 10px;*/
+                    }
+
+                    table.body td {
+                        top: 200px;
+                    }
+
+                    table.total {
+                        page-break-inside: avoid;
+                    }
+
+                    tr.totalrow {
+                        background-color: #e3e3e3;
+                        line-height: 200%;
+                    }
+
+                    td.totalboxtop {
+                        font-size: 12pt;
+                        background-color: #e3e3e3;
+                    }
+
+                    td.addressheader {
+                        font-size: 8pt;
+                        padding-top: 6px;
+                        padding-bottom: 2px;
+                    }
+
+                    td.address {
+                        padding-top: 0px;
+                    }
+
+                    td.totalboxmid {
+                        font-size: 28pt;
+                        padding-top: 20px;
+                        background-color: #e3e3e3;
+                    }
+
+                    td.totalboxbot {
+                        background-color: #e3e3e3;
+                        font-weight: bold;
+                    }
+
+                    span.title {
+                        font-size: 28pt;
+                    }
+
+                    span.number {
+                        font-size: 16pt;
+                    }
+
+                    span.itemname {
+                        font-weight: bold;
+                        line-height: 150%;
+                    }
+
+                    hr {
+                        width: 100%;
+                        color: #d3d3d3;
+                        background-color: #d3d3d3;
+                        height: 1px;
+                    }
+        </style>
+    </head>
+    <body header="nlheader" header-height="80px" footer="nlfooter" footer-height="80px" padding="0.5in 0.5in 0.5in 0.5in" size="Letter">
+
+        <table style="width: 100%; margin-top: 20px;" cellpadding="0" cellspacing="0">
+
+            <tr>
+                <td class="address" width="40%">${record.shipaddress}<br /><br /> RE: ${record.custbody_rfi_casename}<br />${record.custbody_rfi_casenumber}</td>
+                <td width="20%">&nbsp;</td>
+                <td width="40%">
+                    <table width="100%">
+                        <tr>
+                            <td class="address">Claim Number:</td>
+                            <td class="address" align="right">
+                                <#if record.custbody_rfi_claimnumber?length !=0>${record.custbody_rfi_claimnumber}</#if>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td class="address">Alt. Claim Number #1:</td>
+                            <td class="address" align="right">
+                                <#if record.custbody_rfi_altclaim1?length !=0>${record.custbody_rfi_altclaim1}</#if>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td class="address">Alt. Claim Number #2:</td>
+                            <td class="address" align="right">
+                                <#if record.custbody_rfi_altclaim2?length !=0>${record.custbody_rfi_altclaim2}</#if>
+                            </td>
+                        </tr>
+
+
+                        <tr>
+                            <td class="address">File Number:</td>
+                            <td class="address" align="right">
+                                <#if record.custbody_rfi_filenumber?length !=0>${record.custbody_rfi_filenumber}</#if>
+                            </td>
+                        </tr>
+
+                    </table>
+
+                </td>
+            </tr>
+
+        </table><br />
+
+        <#if record.custbody_rfi_custobjects?has_content>
+
+            <#function forceCurrency stringNumber>
+                <#if stringNumber?is_string>
+                    <#assign convertedNumber=stringNumber?number>
+                        <#else>
+                            <#assign convertedNumber=stringNumber>
+                </#if>
+
+                <#return convertedNumber?string["#,##0.00"]>
+            </#function>
+
+
+            <#assign customObject=record.custbody_rfi_custobjects?eval />
+            <#assign previousItem="" />
+
+            <#list customObject as custObj>
+
+
+                <#if custObj.item !=previousItem>
+                    <p><b>${custObj.item}</b></p>
+                </#if>
+
+                <table class="itemtable" style="width: 100%; margin-top: 10px;">
+
+
+
+                    <tr>
+                        <td width="40px">${custObj.date}</td>
+                        <td width="270px">${custObj.emp} <br /> <small>${custObj.memo}</small></td>
+                        <td align="right" width="20px">${forceCurrency(custObj.qty)}</td>
+                        <!--<td align="right" width="20px">99999.00</td>-->
+                        <td align="right" width="8px">${custObj.type}</td>
+                        <td align="right" width="65px">$${forceCurrency(custObj.rate)}</td>
+                        <td align="right" width="65px">$${forceCurrency(custObj.amt)}</td>
+                        <!--<td align="right" width="65px">$1,000,000,000.00</td>
+                        <td align="right" width="65px">$1,000,000,000.00</td>-->
+
+                    </tr>
+                </table>
+
+                <#assign previousItem=custObj.item />
+            </#list>
+        </#if>
+
+        <#if record.item?has_content>
+
+            <hr />
+
+        </#if>
+
+        <div align="right" class="total">
+            <table>
+                <#if record.taxtotal!=0>
+                    <tr>
+                        <td><b>TOTAL TAX:</b></td>
+                        <td align="right"><b>${record.taxtotal}</b></td>
+                    </tr>
+                </#if>
+                <tr>
+                    <td><b>TOTAL INVOICE:</b></td>
+                    <td align="right"><b>${record.total}</b></td>
+                </tr>
+
+            </table>
+        </div>
+
+
+
+    </body>
+</pdf>
