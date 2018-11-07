@@ -1,0 +1,306 @@
+﻿<?xml version="1.0" ?>
+<!DOCTYPE pdf PUBLIC "-//big.faceless.org//report" "report-1.1.dtd">
+<pdf>
+    <head>
+        <#if .locale= ="ru_RU">
+            <link name="verdana" type="font" subtype="opentype" src="${nsfont.verdana}" src-bold="${nsfont.verdana_bold}" bytes="2" />
+        </#if>
+
+        <style type="text/css">
+            table {
+                <#if .locale == "zh_CN"> font-family: stsong, sans-serif;
+                <#elseif .locale == "zh_TW"> font-family: msung, sans-serif;
+                <#elseif .locale == "ja_JP"> font-family: heiseimin, sans-serif;
+                <#elseif .locale == "ko_KR"> font-family: hygothic, sans-serif;
+                <#elseif .locale == "ru_RU"> font-family: verdana;
+                <#else> font-family: sans-serif;
+                </#if> font-size: 9pt;
+                table-layout: fixed;
+            }
+
+            th {
+                font-weight: bold;
+                font-size: 8pt;
+                vertical-align: middle;
+                padding: 5px 6px 3px;
+                background-color: #e3e3e3;
+                color: #333333;
+            }
+
+            td {
+                padding: 4px 6px;
+            }
+
+            b {
+                font-weight: bold;
+                color: #333333;
+            }
+
+            table.header td {
+                padding: 0;
+                font-size: 10pt;
+            }
+
+            table.footer td {
+                padding: 0;
+                font-size: 8pt;
+            }
+
+            table.itemtable th {
+                padding-bottom: 10px;
+                padding-top: 10px;
+            }
+
+            table.body td {
+                padding-top: 2px;
+            }
+
+            table.verticalLine td {
+                border-right: 1px;
+                color: #e3e3e3;
+            }
+
+            td.addressheader {
+                font-weight: bold;
+                font-size: 8pt;
+                padding-top: 6px;
+                padding-bottom: 2px;
+            }
+
+            td.address {
+                padding-top: 0;
+            }
+
+            td.verticalLine {
+                border-right: 1px #d3d3d3;
+            }
+
+            span.title {
+                font-size: 28pt;
+            }
+
+            span.number {
+                font-size: 16pt;
+            }
+
+            div.remittanceSlip {
+                width: 100%;
+                /* To ensure minimal height of remittance slip */
+                height: 200pt;
+                page-break-inside: avoid;
+                page-break-after: avoid;
+            }
+
+            hr {
+                border-top: 1px dashed #d3d3d3;
+                width: 100%;
+                color: #ffffff;
+                background-color: #ffffff;
+                height: 1px;
+            }
+        </style>
+    </head>
+
+    <body padding="0.5in 0.5in 0.5in 0.5in" size="Letter">
+
+        <table colspan="2" class="header" align="center" style="width: 100%">
+            <tr>
+                <td><img src="https://system.netsuite.com/core/media/media.nl?id=29&amp;c=1220551_SB1&amp;h=17836d5dba73db283ed0" style="float: left; margin: 7px; width: 204px; height: 96px;" /></td>
+            </tr>
+            <tr>
+                <td align="left">
+                    <span class="nameandaddress">${companyInformation.companyName}</span>
+                    <span class="nameandaddress">${companyInformation.addressText}</span>
+                </td>
+                <td align="right"><span class="title">Statement</span></td>
+            </tr>
+        </table>
+
+        <table class="header" align="right">
+            <tr>
+                <td align="right">Date: {DATE HERE}</td>
+            </tr>
+            <tr>
+                <td align="right">&nbsp;</td>
+            </tr>
+        </table>
+
+        <table style="width: 100%;">
+            <tr>
+                <td><b>Bill To:</b></td>
+            </tr>
+            <tr>
+                <td class="address" colspan="3">${customer.defaultaddress}</td>
+            </tr>
+        </table>
+
+        <#assign compareWithPrevInvoiceID="0">
+            <#assign intBalance=0>
+                <#assign intShippingTotal=0>
+                    <#assign intTaxTotal=0>
+
+                        <table class="itemtable" rules="cols" style="width: 100%; margin-top: 10px;">
+                            <#list results as result>
+                                <#if result_index= =0>
+                                    <thead>
+                                        <tr>
+                                            <th colspan="7">Date</th>
+                                            <th colspan="12">Description</th>
+                                            <th colspan="3">Qty</th>
+                                            <th colspan="5">Unit Price</th>
+                                            <th colspan="5">Total Price</th>
+                                            <th colspan="5">Tax</th>
+                                            <th colspan="5">Shipping</th>
+                                            <th colspan="6">Total</th>
+                                            <th colspan="7">Location</th>
+                                            <th colspan="7">Payment</th>
+                                            <th colspan="8">Balance</th>
+
+                                        </tr>
+                                    </thead>
+
+                                </#if>
+                                <#assign tranType=result.type>
+                                    <#if compareWithPrevInvoiceID !=result.internalid || tranType= ="Journal">
+                                        <#assign compareWithPrevInvoiceID=result.internalid>
+                                            <tr>
+                                                <td colspan="7" style='border-right: 1px solid #d3d3d3'>${result.trandate}</td>
+                                                <td colspan="12" style='border-right: 1px solid #d3d3d3'><b>${result.transactionname}</b></td>
+                                                <td colspan="3" style='border-right: 1px solid #d3d3d3'>&nbsp;</td>
+                                                <td colspan="5" style='border-right: 1px solid #d3d3d3'>&nbsp;</td>
+                                                <td colspan="5" style='border-right: 1px solid #d3d3d3'>&nbsp;</td>
+                                                <#if tranType= ="Credit Memo" || tranType= ="Cash Refund">
+                                                    <#assign negativeTaxNum=result.taxtotal * -1>
+                                                        <td colspan="5" style='border-right: 1px solid #d3d3d3;font-size: 10px'>- ${negativeTaxNum?string.currency}</td>
+                                                        <#else>
+                                                            <td colspan="5" style='border-right: 1px solid #d3d3d3;font-size: 10px'>${result.taxtotal}</td>
+                                                </#if>
+                                                <#if tranType !="Cash Sale" && tranType !="Cash Refund">
+                                                    <#assign intTaxTotal=intTaxTotal + result.taxtotal>
+                                                </#if>
+                                                <td colspan="5" style='border-right: 1px solid #d3d3d3;font-size: 10px'> ${result.shippingcost}</td>
+                                                <#assign intShippingTotal=intShippingTotal + result.shippingcost>
+
+                                                    <#if result.type !="Payment" && result.type !="Journal">
+                                                        <#if tranType= ="Credit Memo" || tranType= ="Cash Refund">
+                                                            <#assign minusTotalNum=result.total * -1>
+                                                                <td colspan="6" style='border-right: 1px solid #d3d3d3;font-size: 10px'>- ${minusTotalNum?string.currency}</td>
+                                                                <#else>
+                                                                    <td colspan="6" style='border-right: 1px solid #d3d3d3;font-size: 10px'> ${result.total}</td>
+                                                        </#if>
+                                                        <#if tranType !="Cash Sale" && tranType !="Cash Refund">
+                                                            <#assign intBalance=intBalance + result.total>
+                                                        </#if>
+                                                        <#elseif result.type= ="Journal">
+                                                            <td colspan="6" style='border-right: 1px solid #d3d3d3;font-size: 10px'> ${result.debitamount}</td>
+                                                            <#assign intBalance=intBalance + result.debitamount>
+                                                                <#else>
+                                                                    <td colspan="6" style='border-right: 1px solid #d3d3d3'>&nbsp;</td>
+                                                    </#if>
+                                                    <td colspan="7" style='border-right: 1px solid #d3d3d3;font-size: 10px'>${result.location}</td>
+                                                    <#assign creditAmountValue=result.creditamount>
+                                                        <#if creditAmountValue??>
+                                                            <#if creditAmountValue !=0 && tranType= ="Journal">
+                                                                <#assign intBalance=intBalance - creditAmountValue>
+                                                                    <#assign strCreditAmount="- " +creditAmountValue?string.currency>
+                                                                        <td colspan="7" style='border-right: 1px solid #d3d3d3;font-size: 10px'>${strCreditAmount}</td>
+                                                                        <#elseif tranType= ="Payment">
+                                                                            <#assign intBalance=intBalance - result.total>
+                                                                                <td colspan="7" style='border-right: 1px solid #d3d3d3;font-size: 10px'>- ${result.total}</td>
+                                                                                <#else>
+                                                                                    <#-->if creditAmountValue == 0</#-->
+                                                                                    <td colspan="7" style='border-right: 1px solid #d3d3d3'>&nbsp;</td>
+                                                            </#if>
+                                                            <#else>
+                                                                <td colspan="7" style='border-right: 1px solid #d3d3d3'>&nbsp;</td>
+                                                        </#if>
+                                                        <#assign zerovalue=0>
+                                                            <#if (intBalance>
+                                                                = zerovalue)>
+                                                                <#assign strBalance="$" + intBalance?string>
+                                                                    <td colspan="8" style="font-size: 10px">${strBalance}</td>
+                                                                    <#else>
+                                                                        <#assign negativeBalanceNum=intBalance * -1>
+                                                                            <td colspan="8" style="font-size: 10px">- ${negativeBalanceNum?string.currency}</td>
+                                                            </#if>
+
+                                            </tr>
+                                    </#if>
+
+                                    <#if tranType !="Journal" && tranType !="Payment">
+                                        <tr>
+                                            <td colspan="7" style='border-right: 1px solid #d3d3d3'>&nbsp;</td>
+                                            <td colspan="12" style='border-right: 1px solid #d3d3d3;padding-left: 20px;font-size: 10px'>${result.item.salesdescription}</td>
+                                            <td colspan="3" style='border-right: 1px solid #d3d3d3;font-size: 9px'>${result.quantity}</td>
+                                            <td colspan="5" style='border-right: 1px solid #d3d3d3;font-size: 9px'>${result.rate}</td>
+                                            <#if (0>
+                                                result.amount)>
+                                                <#assign intAmountMinus=result.amount * -1>
+                                                    <td colspan="5" style='border-right: 1px solid #d3d3d3;font-size: 9px'>-${intAmountMinus?string.currency}</td>
+                                                    <#else>
+                                                        <td colspan="5" style='border-right: 1px solid #d3d3d3;font-size: 9px'>${result.amount}</td>
+                                            </#if>
+                                            <td colspan="5" style='border-right: 1px solid #d3d3d3'>&nbsp;</td>
+                                            <td colspan="5" style='border-right: 1px solid #d3d3d3'> &nbsp;</td>
+                                            <td colspan="6" style='border-right: 1px solid #d3d3d3'> &nbsp;</td>
+                                            <td colspan="7" style='border-right: 1px solid #d3d3d3'>&nbsp;</td>
+                                            <td colspan="7" style='border-right: 1px solid #d3d3d3'>&nbsp;</td>
+                                            <td colspan="8">&nbsp;</td>
+
+                                        </tr>
+                                    </#if>
+                            </#list><!-- end items -->
+                        </table>
+                        <table class="itemtable" align="right" style="width: 100%; margin-top: 10px;">
+                            <thead>
+                                <tr>
+                                    <th colspan="7"></th>
+                                    <th colspan="12"></th>
+                                    <th colspan="3"></th>
+                                    <th colspan="5"></th>
+                                    <th colspan="5"></th>
+                                    <th colspan="5"></th>
+                                    <th colspan="5"></th>
+                                    <th colspan="6"></th>
+                                    <th colspan="14" align="left">Balance forward: <br />Amount Due:<br />Shipping total: <br />Tax total: </th>
+
+                                    <#assign intBalanceForward=customer.balance - intBalance>
+                                        <#if (0>
+                                            intBalanceForward)>
+                                            <#assign intBalanceForwardMinus=intBalanceForward * -1>
+                                                <#assign strBalanceForward="- " + intBalanceForwardMinus?string.currency>
+                                                    <#elseif (intBalance= =0)>
+                                                        <#assign strBalanceForward=customer.balance?string.currency>
+                                                            <#else>
+                                                                <#assign strBalanceForward=intBalanceForward?string.currency>
+                                        </#if>
+                                        <#if (0>
+                                            intBalance)>
+                                            <#assign intBalanceMinus=intBalance * -1>
+                                                <#assign strBalance="- " + intBalanceMinus?string.currency>
+                                                    <#elseif (intBalance= =0)>
+                                                        <#assign strBalance=customer.balance?string.currency>
+                                                            <#else>
+                                                                <#assign strBalance=intBalance?string.currency>
+                                        </#if>
+                                        <#if (0>
+                                            intShippingTotal)>
+                                            <#assign intShippingTotalMinus=intShippingTotal * -1>
+                                                <#assign strShippingTotal="- " + intShippingTotalMinus?string.currency>
+                                                    <#else>
+                                                        <#assign strShippingTotal=intShippingTotal?string.currency>
+                                        </#if>
+                                        <#if (0>
+                                            intTaxTotal)>
+                                            <#assign intTaxTotalMinus=intTaxTotal * -1>
+                                                <#assign strTaxTotal="- " + intTaxTotalMinus?string.currency>
+                                                    <#else>
+                                                        <#assign strTaxTotal=intTaxTotal?string.currency>
+                                        </#if>
+
+                                        <th colspan="8">${strBalanceForward}<br />${strBalance}<br />${strShippingTotal}<br />${strTaxTotal}</th>
+                                </tr>
+                            </thead>
+                        </table>
+    </body>
+</pdf>

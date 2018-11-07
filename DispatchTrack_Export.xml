@@ -1,0 +1,101 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<service_orders>
+  <service_order order_number="{Original_Order_Number}" id="{Original_Order_Number}">
+      <customer>
+        <first_name></first_name>
+        <last_name></last_name>
+        <email></email>
+        <phone1></phone1>
+        <phone2></phone2>
+        <address1></address1>
+        <address2></address2>
+        <city></city>
+        <state></state>
+        <zip></zip>
+        <latitude></latitude>
+        <longitude></longitude>
+      </customer>
+      <display_order_number>{Order_Number in DispatchTrack}</display_order_number>
+      <status>{New, Scheduled, Started, Unable to Start, Finished, Unable to Finish}</status>
+      <service_type></service_type>
+      <description></description>
+      <service_unit></service_unit>
+      <stop_number></stop_number>
+      <scheduled_at></scheduled_at>
+      <service_time>{Time in minutes}</service_time>
+      <origin></origin>
+        <time_window_start></time_window_start>
+	      <time_window_end></time_window_end>
+      <!-- This is scheduled stop time -->
+      <started_at></started_at>
+      <finished_at></finished_at>
+      <!-- for CODs -->
+      <amount></amount>
+      <cod_amount></cod_amount>
+      <payment_collected></payment_collected>
+      <payment_notes></payment_notes>
+	<order_shipment_events count="{NUMBER_OF_EVENTS}">
+		<shipment_event>
+			<timestamp>{DATE_TIMESTAMP}</timestamp>
+			<description>{Event Description}</description>
+			<location>{Event Location}</location>
+			<customer_flag>{true/false}</customer_flag>
+		</shipment_event>
+	</order_shipment_events>
+	<!-- <images> is an array or <image> tags and the parent tag contains the number of elements as an attribute -->
+	<images count="{NUMBER_OF_IMAGES}">
+  	<image created_at="{DATE_TIMESTAMP}" thumbnail="{THUMBNAIL_URL_1}" src="{FULL_IMAGE_URL_1}"/>
+   	 <image created_at="{DATE_TIMESTAMP}" thumbnail="{THUMBNAIL_URL_2}" src="{FULL_IMAGE_URL_2}"/>
+  	<image created_at="{DATE_TIMESTAMP}" thumbnail="{THUMBNAIL_URL_N}" src="{FULL_IMAGE_URL_N}"/>
+	</images>
+      <notes count="{NUMBER_OF_NOTES}">
+     	 <note created_at="{DATE_TIMESTAMP}" ></note>
+     	 <note created_at="{DATE_TIMESTAMP}" ></note>
+      </notes>
+      <truck>
+      	<id>{LICENSE_NUMBER}</id>
+      	<name>{TRUCK_NUMBER}</name>
+      </truck>
+      <drivers>
+	<driver>	
+		<id>{DRIVER_ID}</id>
+      		<name>{DRIVER_NAME}</name>
+	</driver>
+      </drivers>
+      <items total_quantity="{TOTAL_ITEMS_ORDERED}" delivered_quantity="{TOTAL_ITEMS_DELIVERED}">
+     	 <item>
+     		 <serial_number></serial_number>
+     		 <description><![CDATA[]]></description>
+     		 <quantity></quantity>
+     		 <delivered>{true|false}</delivered>
+     		 <delivered_quantity></delivered_quantity>
+     		 <item_note></item_note>
+		     <amount></amount>
+		     <checked_quantity></checked_quantity>
+		    <location></location>   		 
+      </item>
+      </items>
+      <signature created_at="{DATE_TIMESTAMP}" callback_code="{KEY_TO_SENDBACK_FOR_SIGNATURE}"></signature>
+      <surveys created_at="{DATE_TIMESTAMP}" count="{NUMBER_OF_QUESTIONS}">
+     	 <question number="{SEQUENCE_NUMBER}" rating="[0-5 stars]">{Question Body}</question>
+     	 <question number="{SEQUENCE_NUMBER}" rating="[0-5 stars]">{Question Body}</question>
+     	 <comment><![CDATA[]]></comment>
+      </surveys>
+      <order_history count="{NUMBER_OF_HISTORY_EVENTS}">
+        <history date="{DATE}" time="{TIME_HMS}"></history>
+        <history date="{DATE}" time="{TIME_HMS}"></history>
+        <history date="{DATE}" time="{TIME_HMS}"></history>
+      </order_history>
+      <extra>
+        <custom_field_1>value1</custom_field_1>
+        <custom_field_2>value2</custom_field_2>
+        <custom_field_3>value3</custom_field_3>
+      </extra>
+      <custom_fields>
+	<custom_field_1>value1</custom_field_1>
+	<custom_field_2>value2</custom_field_2>
+	<custom_field_3>value3</custom_field_3>
+      </custom_fields>
+  </service_order>
+</service_orders>
+
